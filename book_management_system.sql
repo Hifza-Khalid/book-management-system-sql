@@ -1,166 +1,163 @@
--- ==================================================
--- Book Management System Database Schema
--- ==================================================
+-- Step 1: Create the Database
+CREATE DATABASE BookManagementSystem;
+USE BookManagementSystem;
 
--- Table 1: Authors
--- Stores information about authors
+-- Step 2: Create Tables
+
+-- Authors Table
 CREATE TABLE Authors (
-    author_id INT PRIMARY KEY, -- Unique identifier for each author
-    name VARCHAR(100) NOT NULL, -- Name of the author
-    birth_date DATE, -- Birth date of the author
-    country VARCHAR(50) -- Country of origin
+    author_id INT PRIMARY KEY AUTO_INCREMENT,
+    author_name VARCHAR(100) NOT NULL,
+    nationality VARCHAR(50)
 );
 
--- Table 2: Publishers
--- Stores information about publishers
-CREATE TABLE Publishers (
-    publisher_id INT PRIMARY KEY, -- Unique identifier for each publisher
-    name VARCHAR(100) NOT NULL, -- Name of the publisher
-    address VARCHAR(150), -- Address of the publisher
-    contact_number VARCHAR(15) -- Contact number for the publisher
-);
-
--- Table 3: Books
--- Stores information about books and links them to authors and publishers
+-- Books Table
 CREATE TABLE Books (
-    book_id INT PRIMARY KEY, -- Unique identifier for each book
-    title VARCHAR(100) NOT NULL, -- Title of the book
-    publication_year INT, -- Year the book was published
-    price DECIMAL(10, 2), -- Price of the book
-    author_id INT, -- Foreign key referencing Authors table
-    publisher_id INT, -- Foreign key referencing Publishers table
-    FOREIGN KEY (author_id) REFERENCES Authors(author_id),
-    FOREIGN KEY (publisher_id) REFERENCES Publishers(publisher_id)
+    book_id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(100) NOT NULL,
+    author_id INT,
+    genre VARCHAR(50),
+    price DECIMAL(10, 2),
+    publication_year INT,
+    FOREIGN KEY (author_id) REFERENCES Authors(author_id)
 );
 
--- Table 4: Customers
--- Stores information about customers who borrow or buy books
+-- Customers Table
 CREATE TABLE Customers (
-    customer_id INT PRIMARY KEY, -- Unique identifier for each customer
-    name VARCHAR(100) NOT NULL, -- Name of the customer
-    email VARCHAR(100) NOT NULL, -- Email of the customer
-    phone VARCHAR(15), -- Phone number of the customer
-    address VARCHAR(150) -- Address of the customer
+    customer_id INT PRIMARY KEY AUTO_INCREMENT,
+    customer_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    phone VARCHAR(15)
 );
 
--- Table 5: Orders
--- Stores information about the books ordered by customers
+-- Orders Table
 CREATE TABLE Orders (
-    order_id INT PRIMARY KEY, -- Unique identifier for each order
-    customer_id INT, -- Foreign key referencing Customers table
-    book_id INT, -- Foreign key referencing Books table
-    order_date DATE, -- Date the order was placed
-    quantity INT, -- Number of books ordered
-    total_price DECIMAL(10, 2), -- Total price of the order (quantity * book price)
+    order_id INT PRIMARY KEY AUTO_INCREMENT,
+    customer_id INT,
+    book_id INT,
+    order_date DATE,
+    quantity INT,
     FOREIGN KEY (customer_id) REFERENCES Customers(customer_id),
     FOREIGN KEY (book_id) REFERENCES Books(book_id)
 );
 
--- ==================================================
--- Sample Data Insertion
--- ==================================================
+-- Step 3: Insert Sample Data
 
 -- Inserting Authors
-INSERT INTO Authors (author_id, name, birth_date, country) VALUES
-(1, 'J.K. Rowling', '1965-07-31', 'United Kingdom'),
-(2, 'George Orwell', '1903-06-25', 'United Kingdom'),
-(3, 'J.R.R. Tolkien', '1892-01-03', 'United Kingdom'),
-(4, 'Mark Twain', '1835-11-30', 'United States'),
-(5, 'Jane Austen', '1775-12-16', 'United Kingdom');
-
--- Inserting Publishers
-INSERT INTO Publishers (publisher_id, name, address, contact_number) VALUES
-(1, 'Bloomsbury Publishing', 'London, UK', '020 7631 5600'),
-(2, 'Penguin Books', 'New York, USA', '800-778-7814'),
-(3, 'Houghton Mifflin Harcourt', 'Boston, USA', '617-351-5000'),
-(4, 'HarperCollins', 'New York, USA', '212-207-7000'),
-(5, 'Oxford University Press', 'Oxford, UK', '01865 556767');
+INSERT INTO Authors (author_name, nationality)
+VALUES 
+    ('J.K. Rowling', 'British'),
+    ('George R.R. Martin', 'American'),
+    ('J.R.R. Tolkien', 'British'),
+    ('Agatha Christie', 'British'),
+    ('Stephen King', 'American'),
+    ('Isaac Asimov', 'Russian'),
+    ('Dan Brown', 'American'),
+    ('F. Scott Fitzgerald', 'American'),
+    ('Harper Lee', 'American'),
+    ('Mark Twain', 'American');
 
 -- Inserting Books
-INSERT INTO Books (book_id, title, publication_year, price, author_id, publisher_id) VALUES
-(1, 'Harry Potter and the Philosopher\'s Stone', 1997, 19.99, 1, 1),
-(2, '1984', 1949, 14.99, 2, 2),
-(3, 'The Lord of the Rings', 1954, 25.99, 3, 3),
-(4, 'Adventures of Huckleberry Finn', 1884, 12.99, 4, 4),
-(5, 'Pride and Prejudice', 1813, 9.99, 5, 5),
-(6, 'Harry Potter and the Chamber of Secrets', 1998, 19.99, 1, 1),
-(7, 'Animal Farm', 1945, 12.99, 2, 2),
-(8, 'The Hobbit', 1937, 15.99, 3, 3),
-(9, 'Tom Sawyer', 1876, 11.99, 4, 4),
-(10, 'Sense and Sensibility', 1811, 8.99, 5, 5);
+INSERT INTO Books (title, author_id, genre, price, publication_year)
+VALUES 
+    ('Harry Potter and the Philosopher\'s Stone', 1, 'Fantasy', 19.99, 1997),
+    ('A Game of Thrones', 2, 'Fantasy', 15.99, 1996),
+    ('The Hobbit', 3, 'Fantasy', 10.99, 1937),
+    ('Murder on the Orient Express', 4, 'Mystery', 12.99, 1934),
+    ('The Shining', 5, 'Horror', 14.99, 1977),
+    ('Foundation', 6, 'Sci-Fi', 16.99, 1951),
+    ('The Da Vinci Code', 7, 'Thriller', 18.99, 2003),
+    ('The Great Gatsby', 8, 'Classic', 13.99, 1925),
+    ('To Kill a Mockingbird', 9, 'Classic', 14.99, 1960),
+    ('Adventures of Huckleberry Finn', 10, 'Classic', 11.99, 1884);
 
 -- Inserting Customers
-INSERT INTO Customers (customer_id, name, email, phone, address) VALUES
-(1, 'Alice Johnson', 'alice.johnson@email.com', '123-456-7890', '123 Main St, Sydney'),
-(2, 'Bob Smith', 'bob.smith@email.com', '234-567-8901', '456 Oak St, New York'),
-(3, 'Charlie Brown', 'charlie.brown@email.com', '345-678-9012', '789 Pine St, London'),
-(4, 'David Clark', 'david.clark@email.com', '456-789-0123', '321 Elm St, California'),
-(5, 'Eva Davis', 'eva.davis@email.com', '567-890-1234', '654 Maple St, Texas');
+INSERT INTO Customers (customer_name, email, phone)
+VALUES 
+    ('Alice Johnson', 'alice@example.com', '123-456-7890'),
+    ('Bob Smith', 'bob@example.com', '234-567-8901'),
+    ('Charlie Brown', 'charlie@example.com', '345-678-9012'),
+    ('David Wilson', 'david@example.com', '456-789-0123'),
+    ('Eva Clark', 'eva@example.com', '567-890-1234'),
+    ('Frank Moore', 'frank@example.com', '678-901-2345'),
+    ('Grace Lee', 'grace@example.com', '789-012-3456'),
+    ('Hannah Harris', 'hannah@example.com', '890-123-4567'),
+    ('Ivy Martin', 'ivy@example.com', '901-234-5678'),
+    ('Jack Scott', 'jack@example.com', '012-345-6789');
 
 -- Inserting Orders
-INSERT INTO Orders (order_id, customer_id, book_id, order_date, quantity, total_price) VALUES
-(1, 1, 1, '2025-04-11', 2, 39.98),
-(2, 2, 4, '2025-04-10', 1, 12.99),
-(3, 3, 2, '2025-04-09', 1, 14.99),
-(4, 4, 3, '2025-04-08', 1, 25.99),
-(5, 5, 5, '2025-04-07', 1, 9.99);
+INSERT INTO Orders (customer_id, book_id, order_date, quantity)
+VALUES 
+    (1, 1, '2025-01-01', 2),
+    (2, 3, '2025-01-03', 1),
+    (3, 5, '2025-01-10', 3),
+    (4, 2, '2025-02-01', 2),
+    (5, 4, '2025-02-10', 1),
+    (6, 6, '2025-02-15', 2),
+    (7, 7, '2025-03-01', 1),
+    (8, 8, '2025-03-10', 2),
+    (9, 9, '2025-03-15', 1),
+    (10, 10, '2025-04-01', 1);
 
--- ==================================================
--- SQL Queries
--- ==================================================
+-- Step 4: Sample Queries
 
--- 1. Fetch All Books and Their Authors
-SELECT B.title, A.name AS author_name
-FROM Books B
-JOIN Authors A ON B.author_id = A.author_id;
-
--- 2. Fetch Books Published by a Specific Publisher
-SELECT B.title, P.name AS publisher_name
-FROM Books B
-JOIN Publishers P ON B.publisher_id = P.publisher_id
-WHERE P.name = 'Penguin Books';
-
--- 3. Fetch All Orders Made by a Specific Customer
-SELECT O.order_id, O.order_date, B.title, O.quantity, O.total_price
+-- 1. Get the total number of books sold for each book
+SELECT B.title, SUM(O.quantity) AS total_books_sold
 FROM Orders O
 JOIN Books B ON O.book_id = B.book_id
-WHERE O.customer_id = 1;
+GROUP BY B.title;
 
--- 4. Find the Most Expensive Book in the System
+-- 2. Get the average price of books by genre
+SELECT genre, AVG(price) AS avg_price
+FROM Books
+GROUP BY genre;
+
+-- 3. Find the author with the most books sold
+SELECT A.author_name, SUM(O.quantity) AS total_books_sold
+FROM Orders O
+JOIN Books B ON O.book_id = B.book_id
+JOIN Authors A ON B.author_id = A.author_id
+GROUP BY A.author_name
+ORDER BY total_books_sold DESC
+LIMIT 1;
+
+-- 4. Find the customer who ordered the most books
+SELECT C.customer_name, SUM(O.quantity) AS total_books_ordered
+FROM Orders O
+JOIN Customers C ON O.customer_id = C.customer_id
+GROUP BY C.customer_name
+ORDER BY total_books_ordered DESC
+LIMIT 1;
+
+-- 5. Get the books ordered by a particular customer (e.g., Alice Johnson)
+SELECT B.title, O.quantity, O.order_date
+FROM Orders O
+JOIN Books B ON O.book_id = B.book_id
+JOIN Customers C ON O.customer_id = C.customer_id
+WHERE C.customer_name = 'Alice Johnson';
+
+-- 6. Get the total sales for each book (price * quantity)
+SELECT B.title, SUM(B.price * O.quantity) AS total_sales
+FROM Orders O
+JOIN Books B ON O.book_id = B.book_id
+GROUP BY B.title;
+
+-- 7. Get the most expensive book
 SELECT title, price
 FROM Books
 ORDER BY price DESC
 LIMIT 1;
 
--- 5. Find the Total Sales for Each Book
-SELECT B.title, SUM(O.quantity) AS total_sales
-FROM Orders O
-JOIN Books B ON O.book_id = B.book_id
-GROUP BY B.title;
-
--- 6. List All Authors with Their Books
-SELECT A.name AS author_name, GROUP_CONCAT(B.title) AS books
-FROM Authors A
-JOIN Books B ON A.author_id = B.author_id
-GROUP BY A.name;
-
--- 7. List Customers and Their Total Orders
-SELECT C.name AS customer_name, COUNT(O.order_id) AS total_orders
-FROM Customers C
-JOIN Orders O ON C.customer_id = O.customer_id
-GROUP BY C.name;
-
--- 8. Fetch Books and Their Details with Author and Publisher Information
-SELECT B.title, A.name AS author_name, P.name AS publisher_name, B.price
+-- 8. Get the list of books with their respective authors
+SELECT B.title, A.author_name
 FROM Books B
-JOIN Authors A ON B.author_id = A.author_id
-JOIN Publishers P ON B.publisher_id = P.publisher_id;
+JOIN Authors A ON B.author_id = A.author_id;
 
--- 9. Update Book Price (Increase by 5)
-UPDATE Books
-SET price = price + 5
-WHERE book_id = 1;
+-- 9. Get the total number of books in the system (Books table)
+SELECT COUNT(*) AS total_books
+FROM Books;
 
--- 10. Delete an Order
-DELETE FROM Orders
-WHERE order_id = 2;
+-- 10. Get the books published after the year 2000
+SELECT title, publication_year
+FROM Books
+WHERE publication_year > 2000;
